@@ -11,7 +11,8 @@ function [ timestamp, numSpikes, hdr ] = readmclusttfile( sFilePath )
 
 %  23 April 2002, C. Higginson, created.
 
-% check integer type.
+% Check integer type. The .t files might be saved as either 32 bit integers
+% (with .t extension) or 64 bit integers (with .t64 extension).
 [ p, file, ext ] = fileparts( fn );
 
 flag64 = regexp( ext, '64' );
