@@ -1,4 +1,4 @@
-function [ timestamp, numSpikes, H ] = readmclusttfile( sFilePath )
+function [ timestamp, numSpikes, hdr ] = readmclusttfile( sFilePath )
 %READMCLUSTTFILE   Reads a cluster t-file produced by MClust.
 %   Inputs:
 %     sFilePath -   This is the full path to the t-file.
@@ -7,7 +7,7 @@ function [ timestamp, numSpikes, H ] = readmclusttfile( sFilePath )
 %     timestamp:        A list of the timestamps of the spikes in increasing
 %                       order in units of 10^-4 seconds.
 %     numSpikes:        Number of spikes in the cluster.
-%     H:                Header file.
+%     hdr:                Header of the .t file.
 
 %  23 April 2002, C. Higginson, created.
 
@@ -23,7 +23,6 @@ else
     intType = 'uint32';
     
 end
-
 
 % Quick check to see if being called correctly.
 if (nargin ~= 1)
@@ -43,15 +42,15 @@ fseek( iClusterFileID, 0, 'bof' );
 beginheader = '%%BEGINHEADER';
 endheader = '%%ENDHEADER';
 iH = 1;
-H = {};
+hdr = {};
 curfpos = ftell( iClusterFileID );
 headerLine = fgetl( iClusterFileID );
 if strcmp( headerLine, beginheader )
-    H{1} = headerLine;
+    hdr{1} = headerLine;
     while ~feof(iClusterFileID) && ~strcmp(headerLine, endheader)
         headerLine = fgetl(iClusterFileID);
         iH = iH+1;
-        H{iH} = headerLine;
+        hdr{iH} = headerLine;
         if strcmp(headerLine, endheader)
             break;
         end;
