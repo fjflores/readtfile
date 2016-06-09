@@ -25,8 +25,9 @@ else
 end
 
 % Quick check to see if being called correctly.
-if (nargin ~= 1)
+if nargin ~= 1
     error( 'There should be exactly 1 input argument.' );
+    
 end;
 
 % Open for binary read access
@@ -34,7 +35,8 @@ iClusterFileID = fopen( sFilePath, 'r', 'b' );
 
 % Throw an error if there is a problem reading the file.
 if ( iClusterFileID == -1 )
-    error(['Error opening cluster file:' sFilePath]);
+    error( [ 'Error opening cluster file:' sFilePath ] );
+    
 end;
 
 % Find the end of the header.
@@ -42,29 +44,37 @@ fseek( iClusterFileID, 0, 'bof' );
 beginheader = '%%BEGINHEADER';
 endheader = '%%ENDHEADER';
 iH = 1;
-hdr = {};
+hdr = { };
 curfpos = ftell( iClusterFileID );
 headerLine = fgetl( iClusterFileID );
 if strcmp( headerLine, beginheader )
-    hdr{1} = headerLine;
-    while ~feof(iClusterFileID) && ~strcmp(headerLine, endheader)
-        headerLine = fgetl(iClusterFileID);
-        iH = iH+1;
-        hdr{iH} = headerLine;
-        if strcmp(headerLine, endheader)
+    hdr{ 1 } = headerLine;
+    
+    while ~feof( iClusterFileID ) && ~strcmp( headerLine, endheader )
+        headerLine = fgetl( iClusterFileID );
+        iH = iH + 1;
+        hdr{ iH } = headerLine;
+        
+        if strcmp( headerLine, endheader )
             break;
+            
         end;
+        
     end;
+    
 end;
 
 % Read all of the timestamps.
-[timestamp, numSpikes] = fread(iClusterFileID, inf, intType );
+[ timestamp, numSpikes ] = fread( iClusterFileID, inf, intType );
 timestamp = timestamp';
 
 % It is important that the timestamps are sequential for later analysis.
-delta = diff(timestamp);
-if (min(delta) < 0)
-    error(['Spike timestamps in video file must be non-decreasing. ' sFilePath]);
+delta = diff( timestamp );
+if min( delta ) < 0
+    error( [...
+        'Spike timestamps in video file must be non-decreasing. '...
+        sFilePath ] );
+    
 end;
 
 % Give a warning if the cell has no spikes.
