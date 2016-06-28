@@ -13,7 +13,7 @@ function [ timestamp, numSpikes, hdr ] = readmclusttfile( sFilePath )
 
 % Check integer type. The .t files might be saved as either 32 bit integers
 % (with .t extension) or 64 bit integers (with .t64 extension).
-[ p, file, ext ] = fileparts( fn );
+[ p, file, ext ] = fileparts( sFilePath );
 
 flag64 = regexp( ext, '64' );
 
